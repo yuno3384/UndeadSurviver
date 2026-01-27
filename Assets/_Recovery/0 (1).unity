@@ -8875,6 +8875,7 @@ Transform:
   - {fileID: 1404105318}
   - {fileID: 1483952321}
   - {fileID: 784670035}
+  - {fileID: 1425931688}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &312598567
@@ -8928,6 +8929,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   inputVec: {x: 0, y: 0}
   _speed: 3
+  scanner: {fileID: 0}
 --- !u!114 &312598569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9167,7 +9169,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 19.978222
+  orthographic size: 6.409091
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -18233,6 +18235,7 @@ MonoBehaviour:
   prefabs:
   - {fileID: 7319255681929763511, guid: 72296d8db9996a445a7793127e59c9fc, type: 3}
   - {fileID: 3954697573612053612, guid: 6ca5b9935a1f1e847942fef78f7a3196, type: 3}
+  - {fileID: 3421357242471266529, guid: 7ef06f2e2e65be4418a076db5a91efd9, type: 3}
 --- !u!4 &1059692285
 Transform:
   m_ObjectHideFlags: 0
@@ -18405,6 +18408,55 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 20, y: 20}
   m_EdgeRadius: 0
+--- !u!1 &1425931687
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1425931688}
+  - component: {fileID: 1425931689}
+  m_Layer: 0
+  m_Name: Weapon 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1425931688
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425931687}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 312598566}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1425931689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425931687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f99870792b5a09448481032a8250621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Weapon
+  id: 1
+  prefabId: 2
+  damage: 3
+  count: 0
+  speed: 0.3
 --- !u!1 &1483952320
 GameObject:
   m_ObjectHideFlags: 0
@@ -18533,6 +18585,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   gameTime: 0
   maxGameTime: 20
+  level: 0
+  kill: 0
+  exp: 0
+  nextExp: 03000000050000000a0000006400000096000000d20000001801000068010000c201000058020000
   pool: {fileID: 1059692284}
   player: {fileID: 312598568}
 --- !u!4 &1777209732
@@ -18747,6 +18803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   inputVec: {x: 0, y: 0}
   _speed: 3
+  scanner: {fileID: 0}
 --- !u!70 &1934144031
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

@@ -43,7 +43,7 @@ public class Weapon : MonoBehaviour
         //.. Test...
         if (Input.GetButtonDown("Jump"))
         {
-            LevelUp(20, 5);
+            LevelUp(10, 1);
         }
     }
 
@@ -107,7 +107,7 @@ public class Weapon : MonoBehaviour
             Bullet bulletComponent = bullet.GetComponent<Bullet>();
             if (bulletComponent != null)
             {
-                bulletComponent.Init(damage, -1); // -1 is Infinity Per.
+                bulletComponent.Init(damage, -1, Vector3.zero); // -1 is Infinity Per.
             }
         }
     }
@@ -119,12 +119,14 @@ public class Weapon : MonoBehaviour
             return;
        }
 
-        Debug.Log("Fire 호출됨!"); // 이 로그가 찍히는지 확인
+        Vector3 targetPos = player.scanner.nearestTarget.position;
+        Vector3 dir = targetPos - transform.position;
+        dir = dir.normalized;
 
         Transform bullet = GameManager.instance.pool.Get(prefabId).transform;
         bullet.position = transform.position;
-
-        Debug.Log("총알 스폰됨: " + bullet.name); // 총알이 생성되는지 확인
+        bullet.rotation = Quaternion.FromToRotation(Vector3.up, dir);
+        bullet.GetComponent<Bullet>().Init(damage, count, dir); 
 
 
     }

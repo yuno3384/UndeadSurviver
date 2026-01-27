@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 using UnityEngine.InputSystem.Processors;
@@ -14,14 +16,18 @@ public class Enemy : MonoBehaviour
     bool isAlive;
 
     Rigidbody2D rigid;
+    Collider2D coll;
     Animator anim;
-    SpriteRenderer sr;
+    SpriteRenderer spriter;
+    WaitForFixedUpdate wait;
 
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+        coll = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
+        spriter = GetComponent<SpriteRenderer>();
+        wait = new WaitForFixedUpdate();
         
         // Animator가 없으면 추가
         if (anim == null)
@@ -32,7 +38,9 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isAlive)
+        if (!isAlive || anim.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+        // GetCurrentAnimatorStateInfo : 애니메이터의 현 상태 정보를 받는 것 > base는 0번
+        //IsName : 이름이 일치하는가
         {
             return;
         }
@@ -46,12 +54,21 @@ public class Enemy : MonoBehaviour
 
     private void LateUpdate()
     {
-        sr.flipX = target.position.x < rigid.position.x;
+        if (!isAlive)
+        {
+            return;
+        }
+        
+        spriter.flipX = target.position.x < rigid.position.x;
     }
 
     private void OnEnable()
     {
         target = GameManager.instance.player.GetComponent<Rigidbody2D>();
+        coll.enabled = true;
+        rigid.simulated = true; // rigid.simulated : 리지드바디의 물리 비활성화
+        spriter.sortingOrder = 2;
+        anim.SetBool("Dead", false);
         isAlive = true;
         health = maxHealth;
     }
@@ -70,7 +87,7 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Bullet"))
+        if (!collision.CompareTag("Bullet") || !isAlive)
         {
             return;
         }
@@ -82,16 +99,50 @@ public class Enemy : MonoBehaviour
         }
 
         health -= bullet.damage;
+        //Knockback(); // 코루틴은 StartCoroutine으로 실행가능
+        //StartCoroutine("Knockback");
+        StartCoroutine(Knockback());
 
-        if(health > 0)
+        if (health > 0)
         {
             // ... Live. Hit Action
+            anim.SetTrigger("Hit");
         }
         else
         {
             // ... Die
-            Dead();
+            isAlive = false;
+            coll.enabled = false;
+            rigid.simulated = false; // rigid.simulated : 리지드바디의 물리 비활성화
+            spriter.sortingOrder = 1;
+            anim.SetBool("Dead",true);
+            //Dead();
+            GameManager.instance.kill++;
+            GameManager.instance.GetExp();
         }
+
+    }
+
+    // 코루틴 : 생명주기와 비동기처럼 실행되는 함수 > IEnumerator
+    IEnumerator Knockback()
+    {
+        //yield return null; // 1프레임 쉬기 > 하나의 물리 프레임을 딜레이
+        //yield return new WaitForSeconds(2f); // 2초 쉬고 실행 > new이므로 최적화에 안 좋음 
+        yield return wait;
+        Vector3 playerPos = GameManager.instance.player.transform.position;
+        Vector3 dirVec = transform.position - playerPos; // 플레이어 기준의 반대 방향
+                                                         
+        // 요약:
+        //     Apply a force to the rigidbody.
+        //
+        // 매개 변수:
+        //   force:
+        //     Components of the force in the X and Y axes.
+        //
+        //   mode:
+        //     The method used to apply the specified force.
+        rigid.AddForce(dirVec.normalized* 3, ForceMode2D.Impulse);
+
 
     }
 
